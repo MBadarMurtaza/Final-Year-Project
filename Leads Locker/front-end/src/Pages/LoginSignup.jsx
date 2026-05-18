@@ -82,8 +82,6 @@ const LoginSignup = () => {
 
   return (
     <main className="relative min-h-[calc(100vh-64px)]  bg-black text-white flex items-center justify-center p-6">
-      {/* Background Image */}
-      {/* Background Image */}
       <img
         src={Backgroundimage}
         alt=""
@@ -91,15 +89,11 @@ const LoginSignup = () => {
         className="pointer-events-none fixed inset-0 h-full w-full object-cover scale-105"
       />
 
-      {/* Dark Overlay */}
       <div className="pointer-events-none fixed inset-0 bg-black/0" />
 
-      {/* Soft Gradient Overlay */}
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-black/70 via-slate-900/50 to-black/70" />
 
-      {/* Main Content */}
       <div className="relative z-10 w-full max-w-md mx-auto flex flex-col items-center">
-        {/* Brand */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 group">
             <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-blue-500/30">
@@ -112,9 +106,7 @@ const LoginSignup = () => {
           </Link>
         </div>
 
-        {/* Glass Card */}
         <div className="w-full bg-white/[0.04] border border-white/10 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.55)]">
-          {/* Heading */}
           <div className="text-center mb-6">
             <h2 className="text-3xl font-semibold tracking-tight text-white mb-2">
               {isLogin ? "Welcome back" : "Create your account"}
@@ -127,7 +119,6 @@ const LoginSignup = () => {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs flex items-center gap-2.5">
               <svg
