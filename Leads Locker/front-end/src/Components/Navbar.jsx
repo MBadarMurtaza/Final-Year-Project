@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import Backgroundimage from "../Components/Assets/background_image.jpeg";
 import Footer from "./Footer";
 
 const Navbar = () => {
@@ -34,7 +33,7 @@ const Navbar = () => {
       />
 
       <div className="relative z-10 flex min-h-screen flex-col">
-        <nav className="z-40 border-bbackdrop-blur-md">
+        <nav className="z-40 border-b border-white/10 bg-[#030712]/80 backdrop-blur-md">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link to="/" className="flex items-center gap-2.5 group">
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-md shadow-blue-500/20 transition-transform group-hover:scale-[1.02]">
@@ -125,13 +124,6 @@ const Navbar = () => {
 
                 {token ? (
                   <>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setOpen(false)}
-                      className={navLinkClass}
-                    >
-                      Dashboard
-                    </Link>
                     <button
                       onClick={() => {
                         setOpen(false);
@@ -167,7 +159,7 @@ const Navbar = () => {
         </nav>
 
         {/* View Routing Injector */}
-        <main className="flex-1">
+        <main className="flex-1 px-4 sm:px-6">
           <Outlet /> {/* This is where the routed page components will be*/}
         </main>
 
