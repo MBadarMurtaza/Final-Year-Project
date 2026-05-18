@@ -46,7 +46,7 @@ const Home = () => {
       <Sider />
 
       {/* --- MAIN CONTENT AREA --- */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center p-8 overflow-y-auto">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-12 overflow-y-auto">
         <div className="w-full max-w-3xl text-center animate-fadeInUp">
           <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">
             Hello,{" "}
