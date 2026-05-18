@@ -50,7 +50,7 @@ const LoginSignup = () => {
             JSON.stringify({ email: formData.email }),
           );
 
-          navigate("/dashboard");
+          navigate("/home");
         } else {
           setError("Invalid email credentials match configuration.");
         }
@@ -66,7 +66,7 @@ const LoginSignup = () => {
             }),
           );
 
-          navigate("/dashboard");
+          navigate("/home");
         } else {
           setError("Please verify all data inputs are complete.");
         }
@@ -81,7 +81,7 @@ const LoginSignup = () => {
   };
 
   return (
-    <main className="relative min-h-[calc(100vh-64px)]  bg-black text-white flex items-center justify-center p-6">
+    <main className="relative min-h-[calc(100vh-64px)] bg-black text-white flex items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
       <img
         src={Backgroundimage}
         alt=""
