@@ -28,8 +28,8 @@ function Sider() {
 
   const menuItems = [
     {
-      path: "/dashboard",
-      name: "Home",
+      path: "/home",
+      name: "New Chat",
       icon: (
         <svg
           className="w-5 h-5"
@@ -230,7 +230,6 @@ function Sider() {
 
   return (
     <>
-      {/* Desktop Sidebar - visible on large screens */}
       <div className="relative hidden md:block bg-[#1a1a1a] w-64 m-2.5 rounded-xl shadow-xl h-[calc(100vh-1.25rem)]">
         <SidebarContent />
       </div>
@@ -292,10 +291,6 @@ function Sider() {
             />
           </svg>
         </button>
-
-        <div className="h-full overflow-y-auto">
-          <SidebarContent />
-        </div>
       </div>
     </>
   );
