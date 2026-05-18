@@ -66,8 +66,7 @@ const Pricing = () => {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05070d] text-white py-20 px-6">
-      
+    <main className="relative min-h-screen overflow-hidden bg-[#05070d] text-white py-20 px-4 sm:px-6 lg:px-8">
       {/* Background Image — Matched to Home page rules */}
       <img
         src={Backgroundimage}
@@ -88,7 +87,6 @@ const Pricing = () => {
 
       {/* Main Container Content */}
       <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center">
-        
         {/* Top Header Badge */}
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70 backdrop-blur-md">
           <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_2px_rgba(96,165,250,0.6)]" />
@@ -104,7 +102,8 @@ const Pricing = () => {
             </span>
           </h1>
           <p className="text-base md:text-lg text-white/65 leading-relaxed max-w-xl mx-auto">
-            Choose the perfect plan for your business needs. All packages start with our inclusive 14-day trial period.
+            Choose the perfect plan for your business needs. All packages start
+            with our inclusive 14-day trial period.
           </p>
 
           {/* Premium Tech Toggle Element */}
@@ -112,7 +111,9 @@ const Pricing = () => {
             <button
               onClick={() => setBillingCycle("monthly")}
               className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${
-                billingCycle === "monthly" ? "bg-white/10 text-white shadow-sm" : "text-white/50 hover:text-white/80"
+                billingCycle === "monthly"
+                  ? "bg-white/10 text-white shadow-sm"
+                  : "text-white/50 hover:text-white/80"
               }`}
             >
               Monthly billing
@@ -120,7 +121,9 @@ const Pricing = () => {
             <button
               onClick={() => setBillingCycle("yearly")}
               className={`px-4 py-1.5 text-xs font-semibold rounded-full flex items-center gap-2 transition-all duration-200 ${
-                billingCycle === "yearly" ? "bg-white/10 text-white shadow-sm" : "text-white/50 hover:text-white/80"
+                billingCycle === "yearly"
+                  ? "bg-white/10 text-white shadow-sm"
+                  : "text-white/50 hover:text-white/80"
               }`}
             >
               Yearly saving
@@ -162,16 +165,23 @@ const Pricing = () => {
                 <div className="mb-6 pb-6 border-b border-white/[0.06]">
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl md:text-5xl font-bold tracking-tight text-white">
-                      ${billingCycle === "monthly" ? plan.price.monthly : Math.round(plan.price.yearly / 12)}
+                      $
+                      {billingCycle === "monthly"
+                        ? plan.price.monthly
+                        : Math.round(plan.price.yearly / 12)}
                     </span>
                     <span className="text-white/40 text-sm">/mo</span>
                   </div>
                   {billingCycle === "yearly" ? (
                     <p className="text-xs text-blue-400/90 font-medium mt-2">
-                      Billed annually at ${plan.price.yearly}/yr (Save {calculateSavings(plan.price.monthly, plan.price.yearly)}%)
+                      Billed annually at ${plan.price.yearly}/yr (Save{" "}
+                      {calculateSavings(plan.price.monthly, plan.price.yearly)}
+                      %)
                     </p>
                   ) : (
-                    <p className="text-xs text-white/40 mt-2">Flexible rolling cancellation</p>
+                    <p className="text-xs text-white/40 mt-2">
+                      Flexible rolling cancellation
+                    </p>
                   )}
                 </div>
 
@@ -182,7 +192,10 @@ const Pricing = () => {
                   </p>
                   <ul className="space-y-3">
                     {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2.5 text-white/75 text-sm">
+                      <li
+                        key={index}
+                        className="flex items-start gap-2.5 text-white/75 text-sm"
+                      >
                         <svg
                           className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0"
                           fill="none"
@@ -190,7 +203,11 @@ const Pricing = () => {
                           strokeWidth="2.5"
                           viewBox="0 0 24 24"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 13l4 4L19 7"
+                          />
                         </svg>
                         <span>{feature}</span>
                       </li>
@@ -221,12 +238,22 @@ const Pricing = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h4 className="text-base font-semibold text-white/90 mb-2">Can I switch plans later?</h4>
-              <p className="text-sm text-white/60 leading-relaxed">Yes, update your workspace tier at any moment directly via your control dashboard. Your billing ledger updates dynamically.</p>
+              <h4 className="text-base font-semibold text-white/90 mb-2">
+                Can I switch plans later?
+              </h4>
+              <p className="text-sm text-white/60 leading-relaxed">
+                Yes, update your workspace tier at any moment directly via your
+                control dashboard. Your billing ledger updates dynamically.
+              </p>
             </div>
             <div>
-              <h4 className="text-base font-semibold text-white/90 mb-2">Is there a setup overhead fee?</h4>
-              <p className="text-sm text-white/60 leading-relaxed">No tracking fees or onboarding tariffs are added. You only pay the exact fixed subscription amount stated above.</p>
+              <h4 className="text-base font-semibold text-white/90 mb-2">
+                Is there a setup overhead fee?
+              </h4>
+              <p className="text-sm text-white/60 leading-relaxed">
+                No tracking fees or onboarding tariffs are added. You only pay
+                the exact fixed subscription amount stated above.
+              </p>
             </div>
           </div>
         </div>
@@ -234,8 +261,13 @@ const Pricing = () => {
         {/* Dynamic Contextual Mini Footer CTA block */}
         <div className="mt-20 w-full max-w-4xl bg-gradient-to-r from-blue-500/[0.03] to-indigo-500/[0.03] border border-white/[0.05] p-8 md:p-10 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
           <div>
-            <h3 className="text-xl font-semibold text-white mb-1">Require personalized specifications?</h3>
-            <p className="text-sm text-white/60">We structure isolated system architecture arrangements for bespoke enterprise operational networks.</p>
+            <h3 className="text-xl font-semibold text-white mb-1">
+              Require personalized specifications?
+            </h3>
+            <p className="text-sm text-white/60">
+              We structure isolated system architecture arrangements for bespoke
+              enterprise operational networks.
+            </p>
           </div>
           <Link
             to="/contact"
@@ -244,7 +276,6 @@ const Pricing = () => {
             Talk with Sales
           </Link>
         </div>
-
       </div>
     </main>
   );
