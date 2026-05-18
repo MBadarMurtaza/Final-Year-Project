@@ -5,8 +5,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Layout from "./Components/Layout";
-import Dashboard from "./Components/Dashboard";
+import Navbar from "./Components/Navbar";
+import LandingPage from "./Pages/LandingPage";
 import LoginSignup from "./Pages/LoginSignup";
 import Home from "./Pages/Home";
 import Pricing from "./Pages/Pricing";
@@ -25,8 +25,8 @@ function App() {
     <Router>
       <Routes>
         {/* Routes with Layout */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+        <Route element={<Navbar />}>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/pricing" element={<Pricing />} />
         </Route>
 
@@ -34,15 +34,14 @@ function App() {
         <Route path="/login" element={<LoginSignup />} />
         <Route path="/signup" element={<LoginSignup />} />
         <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Catch all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
