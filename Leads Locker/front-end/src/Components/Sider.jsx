@@ -7,18 +7,6 @@ function Sider() {
   const token = localStorage.getItem("token");
   const [activeItem, setActiveItem] = useState(location.pathname);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Check screen size for responsive behavior
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -291,6 +279,9 @@ function Sider() {
             />
           </svg>
         </button>
+        <div className="h-full pt-16 overflow-y-auto">
+          <SidebarContent />
+        </div>
       </div>
     </>
   );
