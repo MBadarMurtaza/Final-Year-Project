@@ -13,6 +13,7 @@ const LoginSignup = () => {
     password: "",
     confirmPassword: "",
     rememberMe: false,
+    company: "Leads Locker", // Added default company state matching your input data needs
   });
 
   const [error, setError] = useState("");
@@ -34,46 +35,59 @@ const LoginSignup = () => {
     setLoading(true);
     setError("");
 
+    // Front-end Validation Check
     if (!isLogin && formData.password !== formData.confirmPassword) {
       setError("Passwords don't match!");
       setLoading(false);
       return;
     }
 
-    setTimeout(() => {
-      if (isLogin) {
-        if (formData.email && formData.password) {
-          localStorage.setItem("token", "dummy-token");
+    try {
+      // Determine target URL based on current active view route
+      const url = isLogin
+        ? "http://localhost:5000/user/login"
+        : "http://localhost:5000/user/register";
 
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ email: formData.email }),
-          );
+      // Formulate data payload mapping
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            company: formData.company,
+          };
 
-          navigate("/home");
-        } else {
-          setError("Invalid email credentials match configuration.");
-        }
+      // Make actual live HTTP call to your local Node server
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success: Store the signed authentication JWT and user info
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // Push authenticated user into your home dashboard route
+        navigate("/home");
       } else {
-        if (formData.name && formData.email && formData.password) {
-          localStorage.setItem("token", "dummy-token");
-
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              name: formData.name,
-              email: formData.email,
-            }),
-          );
-
-          navigate("/home");
-        } else {
-          setError("Please verify all data inputs are complete.");
-        }
+        // Server Error: Capture message (e.g. "User already exists" or "Invalid credentials")
+        setError(data.message || "An authentication error occurred.");
       }
-
+    } catch (err) {
+      console.error("Connection error:", err);
+      setError(
+        "Unable to reach the server. Please check your backend connection.",
+      );
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleSocialLogin = (provider) => {
@@ -272,7 +286,6 @@ const LoginSignup = () => {
 
             {/* Social Buttons */}
             <div className="grid grid-cols-2 gap-3">
-              {/* Google */}
               <button
                 onClick={() => handleSocialLogin("Google")}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl text-xs font-medium text-white/80 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
@@ -295,11 +308,9 @@ const LoginSignup = () => {
                     fill="#EA4335"
                   />
                 </svg>
-
                 <span>Google</span>
               </button>
 
-              {/* GitHub */}
               <button
                 onClick={() => handleSocialLogin("GitHub")}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl text-xs font-medium text-white/80 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
@@ -315,7 +326,6 @@ const LoginSignup = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-
                 <span>GitHub</span>
               </button>
             </div>
@@ -324,7 +334,6 @@ const LoginSignup = () => {
           {/* Bottom Navigation */}
           <p className="mt-6 text-center text-xs text-white/50">
             {isLogin ? "Don't have an account?" : "Already registered?"}
-
             <Link
               to={isLogin ? "/signup" : "/login"}
               className="text-blue-400 hover:text-blue-300 font-semibold transition-colors ml-1"
