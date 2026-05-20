@@ -1,14 +1,11 @@
 import express from "express";
-import { registerUser, loginUser } from "../controller/userController.js";
-// Keeping these ready for when you decide to build them out down the line:
-// import { protect } from "../middleware/authMiddleware.js"; 
+import { registerUser, loginUser, socialSync } from "../controller/userController.js";
 
 const router = express.Router();
 
 // Public Routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-
-
+router.post("/social-sync", socialSync);
 
 export default router;
