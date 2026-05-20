@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import Backgroundimage from "../Components/Assets/background_image.jpeg";
 
+// 1. Import Firebase tools from your local config file
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider, githubProvider } from "../config/firebase.js";
+
 const LoginSignup = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,7 +17,7 @@ const LoginSignup = () => {
     password: "",
     confirmPassword: "",
     rememberMe: false,
-    company: "Leads Locker", // Added default company state matching your input data needs
+    company: "",
   });
 
   const [error, setError] = useState("");
@@ -35,7 +39,6 @@ const LoginSignup = () => {
     setLoading(true);
     setError("");
 
-    // Front-end Validation Check
     if (!isLogin && formData.password !== formData.confirmPassword) {
       setError("Passwords don't match!");
       setLoading(false);
@@ -43,12 +46,10 @@ const LoginSignup = () => {
     }
 
     try {
-      // Determine target URL based on current active view route
       const url = isLogin
         ? "http://localhost:5000/user/login"
         : "http://localhost:5000/user/register";
 
-      // Formulate data payload mapping
       const payload = isLogin
         ? { email: formData.email, password: formData.password }
         : {
@@ -58,7 +59,6 @@ const LoginSignup = () => {
             company: formData.company,
           };
 
-      // Make actual live HTTP call to your local Node server
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -70,14 +70,10 @@ const LoginSignup = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Success: Store the signed authentication JWT and user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-
-        // Push authenticated user into your home dashboard route
         navigate("/home");
       } else {
-        // Server Error: Capture message (e.g. "User already exists" or "Invalid credentials")
         setError(data.message || "An authentication error occurred.");
       }
     } catch (err) {
@@ -90,8 +86,59 @@ const LoginSignup = () => {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    console.log(`OAuth stream running for target: ${provider}`);
+  // 2. Updated to handle interactive social popups and database sync
+  const handleSocialLogin = async (providerName) => {
+    setLoading(true);
+    setError("");
+
+    let provider;
+    if (providerName === "Google") provider = googleProvider;
+    if (providerName === "GitHub") provider = githubProvider;
+
+    try {
+      // Trigger the safe OAuth browser popup channel
+      const result = await signInWithPopup(auth, provider);
+      const firebaseUser = result.user;
+
+      // Pack profile data to securely synchronize down into MongoDB
+      const response = await fetch("http://localhost:5000/user/social-sync", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: firebaseUser.displayName || "Social User",
+          email: firebaseUser.email,
+          company: formData.company || "Leads Locker",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save your custom backend application session token & metadata
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // Take the authenticated user home
+        navigate("/home");
+      } else {
+        setError(
+          data.message || "Failed to synchronize profile data with server.",
+        );
+      }
+    } catch (err) {
+      console.error("Social Authentication execution error:", err);
+
+      // Graceful cancellation message override if the user manually closes out the tab
+      if (err.code === "auth/popup-closed-by-user") {
+        setError("Sign-in window closed before completion.");
+      } else {
+        setError(`OAuth Error: ${err.message}`);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,7 +151,6 @@ const LoginSignup = () => {
       />
 
       <div className="pointer-events-none fixed inset-0 bg-black/0" />
-
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-black/70 via-slate-900/50 to-black/70" />
 
       <div className="relative z-10 w-full max-w-md mx-auto flex flex-col items-center">
@@ -113,7 +159,6 @@ const LoginSignup = () => {
             <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-lg shadow-blue-500/30">
               L
             </span>
-
             <span className="text-sm font-semibold tracking-tight text-white/70 transition-colors group-hover:text-white">
               Leads Locker
             </span>
@@ -125,7 +170,6 @@ const LoginSignup = () => {
             <h2 className="text-3xl font-semibold tracking-tight text-white mb-2">
               {isLogin ? "Welcome back" : "Create your account"}
             </h2>
-
             <p className="text-white/60 text-sm leading-relaxed">
               {isLogin
                 ? "Sign in to access your secure dashboard"
@@ -148,20 +192,16 @@ const LoginSignup = () => {
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                 />
               </svg>
-
               <span>{error}</span>
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
             {!isLogin && (
               <div>
                 <label className="block text-xs font-medium text-white/80 mb-1.5 uppercase tracking-wider">
                   Full Name
                 </label>
-
                 <input
                   type="text"
                   name="name"
@@ -174,12 +214,10 @@ const LoginSignup = () => {
               </div>
             )}
 
-            {/* Email */}
             <div>
               <label className="block text-xs font-medium text-white/80 mb-1.5 uppercase tracking-wider">
                 Email Address
               </label>
-
               <input
                 type="email"
                 name="email"
@@ -191,12 +229,10 @@ const LoginSignup = () => {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-xs font-medium text-white/80 mb-1.5 uppercase tracking-wider">
                 Password
               </label>
-
               <input
                 type="password"
                 name="password"
@@ -208,13 +244,11 @@ const LoginSignup = () => {
               />
             </div>
 
-            {/* Confirm Password */}
             {!isLogin && (
               <div>
                 <label className="block text-xs font-medium text-white/80 mb-1.5 uppercase tracking-wider">
                   Confirm Password
                 </label>
-
                 <input
                   type="password"
                   name="confirmPassword"
@@ -227,7 +261,6 @@ const LoginSignup = () => {
               </div>
             )}
 
-            {/* Login Options */}
             {isLogin && (
               <div className="flex items-center justify-between pt-1">
                 <label className="flex items-center cursor-pointer select-none">
@@ -238,12 +271,10 @@ const LoginSignup = () => {
                     onChange={handleChange}
                     className="h-4 w-4 rounded bg-white/5 border-white/10 text-blue-600"
                   />
-
                   <span className="ml-2 text-xs text-white/70">
                     Keep me signed in
                   </span>
                 </label>
-
                 <Link
                   to="/forgot-password"
                   className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
@@ -253,7 +284,6 @@ const LoginSignup = () => {
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -272,23 +302,21 @@ const LoginSignup = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="mt-6">
             <div className="relative flex items-center my-5">
               <div className="flex-1 border-t border-white/10"></div>
-
               <span className="px-3 text-[11px] text-white/40 uppercase tracking-wider whitespace-nowrap">
                 Or continue with
               </span>
-
               <div className="flex-1 border-t border-white/10"></div>
             </div>
 
-            {/* Social Buttons */}
             <div className="grid grid-cols-2 gap-3">
+              {/* Google Button */}
               <button
                 onClick={() => handleSocialLogin("Google")}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl text-xs font-medium text-white/80 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl text-xs font-medium text-white/80 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200 disabled:opacity-50"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -311,9 +339,11 @@ const LoginSignup = () => {
                 <span>Google</span>
               </button>
 
+              {/* GitHub Button */}
               <button
                 onClick={() => handleSocialLogin("GitHub")}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl text-xs font-medium text-white/80 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl text-xs font-medium text-white/80 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-200 disabled:opacity-50"
               >
                 <svg
                   className="h-4 w-4"
@@ -331,7 +361,6 @@ const LoginSignup = () => {
             </div>
           </div>
 
-          {/* Bottom Navigation */}
           <p className="mt-6 text-center text-xs text-white/50">
             {isLogin ? "Don't have an account?" : "Already registered?"}
             <Link
