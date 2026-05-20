@@ -28,3 +28,10 @@
 .animate-fadeInUp {
   animation: fadeInUp 0.75s ease-out;
 }
+
+
+.input-placeholder-truncate::placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
