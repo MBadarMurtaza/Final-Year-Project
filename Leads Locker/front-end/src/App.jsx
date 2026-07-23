@@ -10,8 +10,10 @@ import LandingPage from "./Pages/LandingPage";
 import LoginSignup from "./Pages/LoginSignup";
 import Home from "./Pages/Home";
 import Pricing from "./Pages/Pricing";
+import DashboardAnalysis from "./Pages/DashboardAnalysis";
+import SavedPeople from "./Pages/SavedPeople";
+import History from "./Pages/History"; // Imported History Page
 
-// Protected Route wrapper component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -33,11 +35,42 @@ function App() {
         {/* Routes without Layout */}
         <Route path="/login" element={<LoginSignup />} />
         <Route path="/signup" element={<LoginSignup />} />
+
         <Route
           path="/home"
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Dashboard Route */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardAnalysis />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Saved People Route */}
+        <Route
+          path="/saved-people"
+          element={
+            <ProtectedRoute>
+              <SavedPeople />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* History Route */}
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <History />
             </ProtectedRoute>
           }
         />
