@@ -8,7 +8,7 @@ function Sider() {
   const [activeItem, setActiveItem] = useState(location.pathname);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Controls desktop sidebar expansion (True Gemini behavior)
+  // Controls desktop sidebar expansion
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Get user data from localStorage
@@ -36,6 +36,25 @@ function Sider() {
             strokeLinejoin="round"
             strokeWidth={2}
             d="M12 4v16m8-8H4"
+          />
+        </svg>
+      ),
+    },
+    {
+      path: "/dashboard",
+      name: "Dashboard & Analysis",
+      icon: (
+        <svg
+          className="w-5 h-5 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
         </svg>
       ),
@@ -118,7 +137,7 @@ function Sider() {
                   </span>
                 </Link>
 
-                {/* Collapse Panel Trigger (Arrow Left appears only on hover via group class) */}
+                {/* Collapse Panel Trigger */}
                 <button
                   onClick={() => setIsCollapsed(!isCollapsed)}
                   className="group p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors duration-200 hidden md:block"
@@ -149,7 +168,6 @@ function Sider() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
-                    {/* Arrow Left hidden by default, fades in gracefully on button hover */}
                     <path
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       d="M16 15l-3-3 3-3"
@@ -167,14 +185,12 @@ function Sider() {
                 className="group/header relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-all duration-200"
                 title="Expand panel"
               >
-                {/* Static Brand Logo (Vanishes cleanly on header hover) */}
                 <div className="absolute inset-0 flex items-center justify-center scale-100 opacity-100 group-hover/header:opacity-0 group-hover/header:scale-90 transition-all duration-200">
                   <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white shadow-md">
                     L
                   </span>
                 </div>
 
-                {/* Complete Expand Panel SVG (Arrow Right fully fixed and functional when logo is hovered) */}
                 <div className="absolute inset-0 flex items-center justify-center text-gray-400 group-hover/header:text-white opacity-0 group-hover/header:opacity-100 scale-95 group-hover/header:scale-100 transition-all duration-200">
                   <svg
                     className="w-5 h-5"
@@ -216,17 +232,17 @@ function Sider() {
           {/* Navigation Links */}
           <nav className="px-2 py-4 space-y-1">
             {menuItems.map((item) => (
-              <Link
+              <button
                 key={item.path}
-                to={item.path}
                 onClick={() => {
                   setActiveItem(item.path);
                   setIsDrawerOpen(false);
+                  navigate(item.path); // Explicitly trigger React Router navigation
                 }}
-                className={`flex items-center rounded-lg transition-all duration-200 group relative ${
+                className={`w-full flex items-center rounded-lg transition-all duration-200 group relative ${
                   showLabels ? "gap-3 px-3 py-2.5" : "justify-center p-3"
                 } ${
-                  activeItem === item.path
+                  location.pathname === item.path
                     ? "bg-white/5 text-white"
                     : "text-gray-400 hover:text-white hover:bg-white/5"
                 }`}
@@ -242,13 +258,13 @@ function Sider() {
                 )}
 
                 {/* Visual Active Status Indicators */}
-                {activeItem === item.path &&
+                {location.pathname === item.path &&
                   (showLabels ? (
                     <div className="ml-auto w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
                   ) : (
                     <div className="absolute left-0 w-1 h-5 bg-blue-500 rounded-r-full"></div>
                   ))}
-              </Link>
+              </button>
             ))}
           </nav>
 
@@ -368,7 +384,7 @@ function Sider() {
         <SidebarContent forceOpen={false} />
       </div>
 
-      {/* MOBILE TRIGGER - Slider Open SVG (Arrow Right Fixed) */}
+      {/* MOBILE TRIGGER */}
       <button
         onClick={() => setIsDrawerOpen(true)}
         className="md:hidden fixed top-4 left-4 z-30 bg-[#131314] p-2 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-[#1e1f20] transition-colors shadow-lg"
@@ -422,7 +438,6 @@ function Sider() {
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Mobile Closer Trigger Button - Fixed Arrow Left without hover effect */}
         <button
           onClick={() => setIsDrawerOpen(false)}
           className="absolute top-4 right-4 p-2 text-gray-400 rounded-lg transition-all z-50"
@@ -453,7 +468,6 @@ function Sider() {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            {/* Fixed arrow left path - always visible without hover */}
             <path
               d="M15 9l-3 3 3 3"
               strokeWidth="2.5"
